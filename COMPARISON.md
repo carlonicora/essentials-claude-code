@@ -225,18 +225,20 @@ If you need these things, excellent tools exist. Essentials solves a different p
 
 ## The Three Tiers
 
+> **Start with Simple.** 80% of tasks don't need specs or beads. Escalate only when you hit problems—hallucinations, lost context, multi-day features.
+
 Match workflow to task size:
 
-### Simple: Plan → Implement Loop
+### Simple: Plan → Implement Loop (Use This First)
 
 ```bash
 /plan-creator Add JWT authentication
 /implement-loop .claude/plans/jwt-auth-abc12-plan.md
 ```
 
-Single session. Exit criteria in plan. Loop until pass.
+Single session. Exit criteria in plan. Loop until pass. **This handles 80% of tasks.**
 
-### Medium: Plan → Spec → Spec Loop
+### Medium: Plan → Spec → Spec Loop (When You Want Review)
 
 ```bash
 /plan-creator Add JWT authentication
@@ -245,9 +247,9 @@ Single session. Exit criteria in plan. Loop until pass.
 /spec-loop jwt-auth
 ```
 
-Adds human review of spec before execution. Good when you want to verify the design.
+Adds human review of spec before execution. **Use when you want to verify the design before any code is written.** Also useful for team handoffs.
 
-### Large: Plan → Spec → Beads → Beads Loop
+### Large: Plan → Spec → Beads → Beads Loop (When Simple Fails)
 
 ```bash
 /plan-creator Add complete auth system
@@ -256,7 +258,7 @@ Adds human review of spec before execution. Good when you want to verify the des
 /beads-loop --label openspec:auth-system
 ```
 
-Full persistence. Each bead is self-contained. Survives sessions, context compaction, interruptions. For multi-day features or when AI hallucinates on large tasks.
+Full persistence. Each bead is self-contained. Survives sessions, context compaction, interruptions. **Use when Simple tier fails—AI hallucinates mid-task, loses track, or feature spans multiple days.** This is the most token-expensive workflow.
 
 ---
 
@@ -277,6 +279,10 @@ Parallel agents process more files simultaneously. Essentials does one thing at 
 **Simplicity vs Power**
 
 Conversation tools have no learning curve. Essentials has three tiers to learn. The tiers exist because one size doesn't fit all tasks.
+
+**Token Cost vs Context Recovery**
+
+The full pipeline (plan → spec → beads) copies implementation code multiple times. This is intentional—each bead must be self-contained for context recovery. But it's expensive. For simple tasks, skip specs and beads entirely.
 
 ---
 

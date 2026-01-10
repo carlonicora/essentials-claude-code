@@ -1,5 +1,7 @@
 # Spec-Driven Workflow with OpenSpec
 
+> **Use when you want human review before coding.** For most tasks, [WORKFLOW-SIMPLE.md](WORKFLOW-SIMPLE.md) is sufficient. This workflow adds process overhead but catches design issues before any code is written—useful for teams or when requirements are ambiguous.
+
 Human validation between requirements and implementation. Catches misunderstandings early—cheaper than fixing code later.
 
 ---

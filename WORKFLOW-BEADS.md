@@ -1,5 +1,7 @@
 # Beads Workflow for Large Plans
 
+> **Don't start here.** This is the most token-expensive workflow. Use [WORKFLOW-SIMPLE.md](WORKFLOW-SIMPLE.md) first. Escalate to beads only when the simple workflow fails—AI hallucinates mid-task, loses track, or the feature spans multiple days.
+
 [Beads](https://github.com/steveyegge/beads) provides persistent, structured memory that survives session boundaries and context compaction. Use for large features spanning multiple sessions, or when plans cause hallucinations mid-implementation.
 
 ---

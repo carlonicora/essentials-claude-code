@@ -29,9 +29,11 @@ mkdir -p .claude/plans .claude/maps .claude/prompts
 
 ## Workflows
 
+> **80% of tasks need only the Simple workflow.** Start there. Escalate to Medium/Large only when you hit problems (hallucinations, lost context, multi-day features).
+
 | Size | Commands | When to Use |
 |------|----------|-------------|
-| **Small** | `/plan-creator` → `/implement-loop` | Single session, simple tasks (start here) |
+| **Simple** | `/plan-creator` → `/implement-loop` | Single session, most tasks (start here) |
 | **Medium** | Plan → `/proposal-creator` → `/spec-loop` | Want human review before coding |
 | **Large** | Plan → Proposal → `/beads-creator` → `/beads-loop` | AI hallucinating, multi-session, spans days |
 
@@ -98,9 +100,10 @@ All loops: `--step` (default, pause after each task) or `--auto` (continuous). O
 
 ## Best Practices
 
-1. **Start simple** — Scale up only when you hit problems (hallucinations, lost track).
+1. **Start simple** — 80% of tasks need only `/plan-creator` → `/implement-loop`. Scale up only when you hit problems.
 2. **Exit criteria are non-negotiable** — Not "tests pass" but exact commands: `npm test -- auth`.
 3. **Review before looping** — Loops execute autonomously. Editing plans is cheap; debugging bad code is expensive.
+4. **Token cost is a tradeoff** — The full pipeline copies code multiple times (plan → spec → beads) for context recovery. This is intentional but expensive—don't use it for simple tasks.
 
 | After | Review |
 |-------|--------|

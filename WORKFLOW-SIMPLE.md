@@ -1,5 +1,7 @@
 # Simple Workflow: Plan + Implement
 
+> **This is the default workflow. 80% of tasks don't need specs or beads.** Start here. Escalate only when you hit problems—hallucinations, lost context, multi-day features.
+
 Single-session features, bug fixes, and refactoring. For larger work: [WORKFLOW-BEADS.md](WORKFLOW-BEADS.md). For validation before coding: [WORKFLOW-SPEC.md](WORKFLOW-SPEC.md).
 
 ## Overview
