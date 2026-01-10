@@ -1,6 +1,7 @@
 ---
-description: "Cancel active beads loop"
-allowed-tools: ["Bash"]
+allowed-tools: Bash
+argument-hint: ""
+description: Cancel active beads loop
 ---
 
 # Cancel Beads

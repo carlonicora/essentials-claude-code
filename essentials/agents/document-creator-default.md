@@ -451,7 +451,7 @@ STATUS: CREATED
 
 ---
 
-# BUILT-IN LSP TOOLS REFERENCE
+# TOOLS REFERENCE
 
 **LSP Tool Operations:**
 - `LSP(operation="documentSymbol", filePath, line, character)` - Get all symbols in a document
@@ -471,7 +471,7 @@ STATUS: CREATED
 
 # CRITICAL RULES
 
-1. **Use built-in LSP tools** for all symbol discovery - never guess or parse manually
+1. **Use built-in LSP tools** - For all symbol discovery - never guess or parse manually
 2. **Glob first** - Always discover files before analysis
 3. **LSP documentSymbol** - Use for every file to extract symbols
 4. **Evidence-based** - Every pattern must be backed by LSP data

@@ -5,6 +5,8 @@ description: Generate and apply MR/PR description directly via gh or glab CLI (p
 skills: ["github-cli", "gitlab-cli"]
 ---
 
+# MR/PR Description Creator
+
 Generate professional merge request (MR) or pull request (PR) descriptions and apply them directly using `gh` (GitHub) or `glab` (GitLab) CLI - auto-detected based on repository remote.
 
 **IMPORTANT**: Requires `gh` or `glab` CLI installed and authenticated. No file created - description applied directly.

@@ -4,21 +4,61 @@ argument-hint: "[directory] [--ignore <patterns>]"
 description: Generate comprehensive code maps with LSP for symbol tracking and reference verification (project)
 ---
 
+# Code Map Creator
+
 Generate a comprehensive code map using Claude Code's built-in LSP tools. Maps all functions, classes, variables, and imports with verification tracking.
 
 **IMPORTANT**: Keep orchestrator output minimal. User reviews the code map JSON file directly, not in chat.
 
+## Why Code Maps?
+
+Code maps provide a structured view of your entire codebase with LSP-verified symbol information.
+
+- **Accuracy** - Language server understands syntax and semantics, correct symbol kind identification (class vs function vs variable), proper method extraction from classes
+- **Verification** - `findReferences` validates symbol usage, identifies truly unused code, tracks verification status per file
+- **Comprehensive** - All symbol types captured, import tracking, dependency mapping, entire project or specific directory support
+
+## What Good Code Maps Include
+
+1. **Symbol Extraction**
+   - Imports, variables, constants
+   - Classes with methods
+   - Functions with signatures
+   - Check status tracking (pending, in_progress, completed)
+
+2. **Reference Verification**
+   - Public symbols verified with `findReferences`
+   - Exports validated for actual usage
+   - Notes documenting findings
+
+3. **Dependency Mapping**
+   - Import sources (stdlib, third-party, local)
+   - Consumer file identification
+   - Dependency relationships
+
+4. **Summary Statistics**
+   - Totals (files, classes, functions, variables)
+   - Package/directory groupings
+   - Package descriptions
+
 ## Built-in LSP Operations Used
 
 This command uses these Claude Code built-in LSP operations:
-- `documentSymbol` — Get all symbols in a document
-- `findReferences` — Verify symbol usage
-- `goToDefinition` — Find symbol definitions
+- `documentSymbol` - Get all symbols in a document
+- `findReferences` - Verify symbol usage
+- `goToDefinition` - Find symbol definitions
 
 ## Arguments
 
-- `[directory]` - Directory path to map (optional, defaults to `.` for entire project)
-- `--ignore <patterns>` - Comma-separated patterns to ignore (optional, e.g., `--ignore "*.test.ts,__pycache__,node_modules"`)
+Arguments specify the target directory and optional ignore patterns:
+- Directory path: `/codemap-creator src/`
+- Ignore patterns: `/codemap-creator --ignore "*.test.ts,__pycache__,node_modules"`
+- Combined: `/codemap-creator src/ --ignore "*.spec.ts,dist,coverage"`
+- Default (entire project): `/codemap-creator`
+
+**Default Behavior**: If no directory specified, map the entire project from root including all subfolders and modules.
+
+**Ignore Patterns**: Can be file names, directory names, or glob patterns (e.g., `*.test.ts`, `__pycache__`, `node_modules`, `dist`).
 
 ## Instructions
 
@@ -27,10 +67,6 @@ This command uses these Claude Code built-in LSP operations:
 Parse `$ARGUMENTS` to extract:
 1. Target directory path (default to `.` if not provided)
 2. Optional ignore patterns (`--ignore`)
-
-**Default Behavior**: If no directory specified, map the entire project from root including all subfolders and modules.
-
-**Ignore Patterns**: Can be file names, directory names, or glob patterns (e.g., `*.test.ts`, `__pycache__`, `node_modules`, `dist`).
 
 Validate the directory exists before proceeding. If it doesn't exist, report the error.
 
@@ -191,71 +227,80 @@ Present the code map results to the user:
 
 ```
 /codemap-creator [directory] [--ignore <patterns>]
-    │
-    ▼
-┌───────────────────────────────────────────────────────────────┐
-│ STEP 1: PARSE & VALIDATE                                      │
-│                                                               │
-│  • Parse directory argument (default: ".")                    │
-│  • Parse --ignore patterns (e.g., "*.test.ts,node_modules")   │
-│  • Validate directory exists                                  │
-└───────────────────────────────────────────────────────────────┘
-    │
-    ▼
-┌───────────────────────────────────────────────────────────────┐
-│ STEP 2: LAUNCH AGENT                                          │
-│                                                               │
-│  Agent: codemap-creator                                │
-│  Mode: run_in_background: true                                │
-│                                                               │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │ AGENT PHASES:                                           │  │
-│  │                                                         │  │
-│  │  1. FILE DISCOVERY                                      │  │
-│  │     • Glob (recursive) to find all files            │  │
-│  │     • Apply ignore patterns                             │  │
-│  │     • Build file manifest                               │  │
-│  │                                                         │  │
-│  │  2. SYMBOL EXTRACTION                                   │  │
-│  │     • documentSymbol for each file                │  │
-│  │     • Extract imports, classes, functions, variables    │  │
-│  │     • Track check_status: pending → in_progress → done  │  │
-│  │                                                         │  │
-│  │  3. REFERENCE VERIFICATION                              │  │
-│  │     • findReferences for public symbols       │  │
-│  │     • Mark verified_used or potentially_unused          │  │
-│  │                                                         │  │
-│  │  4. DEPENDENCY MAPPING                                  │  │
-│  │     • Track import sources                              │  │
-│  │     • search_for_pattern for consumers                  │  │
-│  │                                                         │  │
-│  │  5. SUMMARY GENERATION                                  │  │
-│  │     • Calculate totals (files, classes, functions)      │  │
-│  │     • Group by package                                  │  │
-│  │                                                         │  │
-│  │  6. WRITE JSON MAP                                      │  │
-│  │     → .claude/maps/code-map-{dir}-{hash5}.json          │  │
-│  └─────────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────────────────────┘
-    │
-    ▼
-┌───────────────────────────────────────────────────────────────┐
-│ STEP 3: COLLECT RESULTS                                       │
-│                                                               │
-│  • TaskOutput (block: true) wait for completion               │
-└───────────────────────────────────────────────────────────────┘
-    │
-    ▼
-┌───────────────────────────────────────────────────────────────┐
-│ STEP 4: REPORT RESULTS                                        │
-│                                                               │
-│  Output:                                                      │
-│  • Map file path                                              │
-│  • Statistics (files, classes, functions, imports)            │
-│  • Packages discovered                                        │
-│  • built-in verification stats                                  │
-└───────────────────────────────────────────────────────────────┘
+    |
+    v
++---------------------------------------------------------------+
+| STEP 1: PARSE & VALIDATE                                      |
+|                                                               |
+|  * Parse directory argument (default: ".")                    |
+|  * Parse --ignore patterns (e.g., "*.test.ts,node_modules")   |
+|  * Validate directory exists                                  |
++---------------------------------------------------------------+
+    |
+    v
++---------------------------------------------------------------+
+| STEP 2: LAUNCH AGENT                                          |
+|                                                               |
+|  Agent: codemap-creator                                       |
+|  Mode: run_in_background: true                                |
+|                                                               |
+|  +---------------------------------------------------------+  |
+|  | AGENT PHASES:                                           |  |
+|  |                                                         |  |
+|  |  1. FILE DISCOVERY                                      |  |
+|  |     * Glob (recursive) to find all files                |  |
+|  |     * Apply ignore patterns                             |  |
+|  |     * Build file manifest                               |  |
+|  |                                                         |  |
+|  |  2. SYMBOL EXTRACTION                                   |  |
+|  |     * documentSymbol for each file                      |  |
+|  |     * Extract imports, classes, functions, variables    |  |
+|  |     * Track check_status: pending -> in_progress -> done|  |
+|  |                                                         |  |
+|  |  3. REFERENCE VERIFICATION                              |  |
+|  |     * findReferences for public symbols                 |  |
+|  |     * Mark verified_used or potentially_unused          |  |
+|  |                                                         |  |
+|  |  4. DEPENDENCY MAPPING                                  |  |
+|  |     * Track import sources                              |  |
+|  |     * search_for_pattern for consumers                  |  |
+|  |                                                         |  |
+|  |  5. SUMMARY GENERATION                                  |  |
+|  |     * Calculate totals (files, classes, functions)      |  |
+|  |     * Group by package                                  |  |
+|  |                                                         |  |
+|  |  6. WRITE JSON MAP                                      |  |
+|  |     -> .claude/maps/code-map-{dir}-{hash5}.json         |  |
+|  +---------------------------------------------------------+  |
++---------------------------------------------------------------+
+    |
+    v
++---------------------------------------------------------------+
+| STEP 3: COLLECT RESULTS                                       |
+|                                                               |
+|  * TaskOutput (block: true) wait for completion               |
++---------------------------------------------------------------+
+    |
+    v
++---------------------------------------------------------------+
+| STEP 4: REPORT RESULTS                                        |
+|                                                               |
+|  Output:                                                      |
+|  * Map file path                                              |
+|  * Statistics (files, classes, functions, imports)            |
+|  * Packages discovered                                        |
+|  * built-in verification stats                                |
++---------------------------------------------------------------+
 ```
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| Directory does not exist | Report error with path, suggest valid directories |
+| No files found matching patterns | Report empty result, suggest adjusting ignore patterns |
+| LSP operation fails for a file | Log error in notes, mark file with error status, continue |
+| Invalid ignore pattern syntax | Report parsing error, show valid pattern examples |
 
 ## Example Usage
 
@@ -349,21 +394,3 @@ The generated JSON map includes:
   }
 }
 ```
-
-## Advantages of built-in LSP Mapping
-
-**Accuracy:**
-- Language server understands syntax and semantics
-- Correct symbol kind identification (class vs function vs variable)
-- Proper method extraction from classes
-
-**Verification:**
-- `findReferences` validates symbol usage
-- Identifies truly unused code
-- Tracks verification status per file
-
-**Comprehensive:**
-- All symbol types captured
-- Import tracking
-- Dependency mapping
-- Entire project or specific directory support

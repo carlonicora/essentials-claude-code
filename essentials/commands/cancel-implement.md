@@ -1,6 +1,7 @@
 ---
-description: "Cancel active implement loop"
-allowed-tools: ["Bash"]
+allowed-tools: Bash
+argument-hint: ""
+description: Cancel active implement loop
 ---
 
 # Cancel Implement

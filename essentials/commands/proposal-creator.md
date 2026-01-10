@@ -4,6 +4,8 @@ argument-hint: "[plan-path-or-description]"
 description: Convert plans, context, or descriptions into validated OpenSpec proposals (project)
 ---
 
+# Proposal Creator
+
 Convert architectural plans, current context, or task descriptions into validated OpenSpec change proposals.
 
 **IMPORTANT**: Keep orchestrator output minimal. User reviews the OpenSpec files directly.
@@ -267,26 +269,6 @@ Plan (SOURCE OF TRUTH)
  └──▶ specs/*.md: plan_reference + requirements line numbers
 ```
 
-## Input Mapping
-
-How different inputs map to OpenSpec structure:
-
-| Input Section | → OpenSpec File | Content |
-|---------------|-----------------|---------|
-| Plan path | proposal.md | plan_reference (for recovery) |
-| Status/Mode | proposal.md / design.md | Plan status, implementation mode |
-| Summary/Task | proposal.md | Overview, motivation |
-| Architecture | design.md | Decisions, patterns |
-| Implementation Steps | tasks.md | Ordered task list |
-| Requirements | specs/*/spec.md | ADDED/MODIFIED/REMOVED |
-| Files to Modify | tasks.md + specs | File references |
-| Exit Criteria | tasks.md | Verification steps |
-| Risk Analysis | design.md | Technical/Integration risks, rollback strategy |
-| Stakeholders | proposal.md | Impact section (primary/secondary) |
-| Testing Strategy | tasks.md + specs | Unit/Integration tests, existing tests to update |
-| Success Metrics | tasks.md | Functional criteria, quality metrics, acceptance checklist |
-| Post-Implementation | tasks.md | Automated checks, validation steps, stakeholder notification |
-
 ## Error Handling
 
 | Scenario | Action |
@@ -314,6 +296,26 @@ How different inputs map to OpenSpec structure:
 openspec show add-oauth2-authentication
 /openspec:apply add-oauth2-authentication
 ```
+
+## Input Mapping
+
+How different inputs map to OpenSpec structure:
+
+| Input Section | → OpenSpec File | Content |
+|---------------|-----------------|---------|
+| Plan path | proposal.md | plan_reference (for recovery) |
+| Status/Mode | proposal.md / design.md | Plan status, implementation mode |
+| Summary/Task | proposal.md | Overview, motivation |
+| Architecture | design.md | Decisions, patterns |
+| Implementation Steps | tasks.md | Ordered task list |
+| Requirements | specs/*/spec.md | ADDED/MODIFIED/REMOVED |
+| Files to Modify | tasks.md + specs | File references |
+| Exit Criteria | tasks.md | Verification steps |
+| Risk Analysis | design.md | Technical/Integration risks, rollback strategy |
+| Stakeholders | proposal.md | Impact section (primary/secondary) |
+| Testing Strategy | tasks.md + specs | Unit/Integration tests, existing tests to update |
+| Success Metrics | tasks.md | Functional criteria, quality metrics, acceptance checklist |
+| Post-Implementation | tasks.md | Automated checks, validation steps, stakeholder notification |
 
 ## Auto-Decomposition
 

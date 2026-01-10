@@ -9,6 +9,17 @@ hide-from-slash-command-tool: "true"
 
 Execute beads iteratively until all ready tasks are complete. This is Stage 5 of the 5-stage workflow.
 
+**IMPORTANT**: This command runs in step mode by default, pausing after each bead for human control. Use `--auto` to skip pauses.
+
+## Why Beads Loop?
+
+Beads loop provides iterative execution of self-contained tasks with built-in progress tracking and human oversight:
+
+- **Step Mode Control** - Pauses after each bead to prevent context compaction and quality degradation on large task sets
+- **Priority-Based Execution** - Follows `bd ready` priority order to handle dependencies correctly
+- **Context Recovery** - Easy commands to recover state if you lose track during execution
+- **Stealth Mode** - For brownfield development, keeps tracking files out of the repo
+
 ## Workflow Integration
 
 This command is the final stage after:
@@ -18,15 +29,23 @@ This command is the final stage after:
 4. `/beads-creator` - Convert spec to self-contained beads
 5. **`/beads-loop`** - Execute beads iteratively
 
-## Setup
+## Arguments
 
-```bash
-"${CLAUDE_PLUGIN_ROOT}/scripts/setup-beads-loop.sh" $ARGUMENTS
-```
+The command accepts the following flags:
+- `--step`: Run in step mode (default) - pauses after each bead for confirmation
+- `--auto`: Run in auto mode - skips pauses but still follows priority order
+- `--label <label>`: Filter beads by label (e.g., `--label openspec:my-change`)
+- `--max-iterations N`: Maximum number of beads to execute before stopping
 
 ## Instructions
 
 You are now in **beads loop mode**. Execute all ready beads until complete.
+
+### Setup
+
+```bash
+"${CLAUDE_PLUGIN_ROOT}/scripts/setup-beads-loop.sh" $ARGUMENTS
+```
 
 ### Step 1: Find Ready Work
 
@@ -94,34 +113,7 @@ Then archive the OpenSpec change if applicable:
 openspec archive <change-name>
 ```
 
-### Context Recovery
-
-If you lose track:
-
-```bash
-bd ready                        # See what's next
-bd list --status in_progress    # Find current work
-bd show <id>                    # Full task details
-```
-
-### Stealth Mode
-
-For brownfield development, beads should run in stealth mode to avoid committing tracking files:
-
-```bash
-bd init --stealth    # First time only - adds .beads/ to .gitignore
-```
-
-Stealth mode keeps all beads functionality but doesn't pollute the repo.
-
-### Stopping
-
-- Say "All beads complete" when done
-- Run `/cancel-beads` to stop early
-- Max iterations reached (if set)
-- In step mode: say "stop" at the pause prompt
-
-### Step Mode (Default)
+## Step Mode (Default)
 
 Step mode pauses after each bead for human control. This prevents context compaction and quality degradation on large task sets.
 
@@ -175,3 +167,59 @@ Based on the response:
 - **Other/feedback**: Handle user's custom input
 
 **Auto mode** (`--auto` flag): Skips pauses but still follows `bd ready` priority order.
+
+## Context Recovery
+
+If you lose track:
+
+```bash
+bd ready                        # See what's next
+bd list --status in_progress    # Find current work
+bd show <id>                    # Full task details
+```
+
+## Stealth Mode
+
+For brownfield development, beads should run in stealth mode to avoid committing tracking files:
+
+```bash
+bd init --stealth    # First time only - adds .beads/ to .gitignore
+```
+
+Stealth mode keeps all beads functionality but doesn't pollute the repo.
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No ready tasks found | Check if all tasks are complete or blocked; run `bd list` to see status |
+| Lost track of current work | Run `bd list --status in_progress` to find in-progress tasks |
+| Task has unmet dependencies | Task won't appear in `bd ready`; complete blocking tasks first |
+| Max iterations reached | Loop stops automatically; resume with `/beads-loop` to continue |
+| Context compaction needed | Use step mode to pause after each bead; reduces context buildup |
+
+## Stopping
+
+- Say "All beads complete" when done
+- Run `/cancel-beads` to stop early
+- Max iterations reached (if set)
+- In step mode: say "stop" at the pause prompt
+
+## Example Usage
+
+```bash
+# Run in default step mode (pauses after each bead)
+/beads-loop
+
+# Run in auto mode (no pauses)
+/beads-loop --auto
+
+# Run only beads with a specific label
+/beads-loop --label openspec:add-auth
+
+# Limit to 5 iterations
+/beads-loop --max-iterations 5
+
+# Combine flags
+/beads-loop --auto --label openspec:refactor --max-iterations 10
+```

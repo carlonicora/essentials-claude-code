@@ -4,7 +4,37 @@ argument-hint: "<spec-path> [spec-path-2] [spec-path-3] ..."
 description: Convert OpenSpec specs to self-contained Beads (project)
 ---
 
+# Beads Creator
+
 Convert OpenSpec specification(s) into self-contained Beads issues.
+
+**IMPORTANT**: Each bead must be SELF-CONTAINED - implementable with ONLY its description. Never reference external specs without copying the content.
+
+## Why Beads?
+
+Beads provide structured, trackable work items that integrate with the OpenSpec workflow.
+
+Key advantages:
+- **Self-Contained** - Each bead includes all context needed for implementation
+- **Traceable** - Dual back-references link beads to specs and plans
+- **Parallelizable** - Independent beads can be worked on simultaneously
+
+## What Good Beads Include
+
+1. **Context Chain**
+   - Spec reference path
+   - Plan reference path
+   - Task reference from tasks.md
+
+2. **Requirements**
+   - Full text copied from spec (never "see spec")
+   - Code examples from design.md
+   - Exact file paths
+
+3. **Exit Criteria**
+   - Specific test commands
+   - Build verification steps
+   - Acceptance criteria checkboxes
 
 ## Arguments
 
@@ -203,39 +233,6 @@ bd create "Add JWT validation" -t task -p 2 \
 
 **Litmus test:** Could someone implement this with ONLY the bead description? If not, add more context.
 
-## Workflow
-
-Works with plans from **any planner**:
-
-```
-/plan-creator <task>           ┐
-/bug-plan-creator <error>      ├─▶ .claude/plans/*-plan.md
-/code-quality-plan-creator     ┘
-    │
-    ▼
-/proposal-creator <plan>
-    │
-    ├─── [single proposal] ─────────▶ openspec/changes/<id>/
-    │                                       │
-    └─── [decomposed: multiple] ────▶ openspec/changes/<id-1>/
-                                      openspec/changes/<id-2>/
-                                      openspec/changes/<id-3>/
-    │                                       │
-    ▼                                       ▼
-/beads-creator <spec>           /beads-creator <spec-1> <spec-2> <spec-3>
-    │                                       │
-    ▼                                       ▼
-/beads-loop                     /beads-loop (respects cross-spec deps)
-```
-
-## Error Handling
-
-| Scenario | Action |
-|----------|--------|
-| bd not installed | "Install bd: https://github.com/steveyegge/beads" |
-| bd not initialized | "Run: bd init" |
-| Path not found | Report error |
-
 ## Auto-Decomposition
 
 The agent **automatically** decomposes large beads - no user prompt needed.
@@ -288,6 +285,31 @@ Next: /beads-loop --label openspec:<name>
 ===============================================================
 ```
 
+## Workflow Diagram
+
+Works with plans from **any planner**:
+
+```
+/plan-creator <task>           ┐
+/bug-plan-creator <error>      ├─▶ .claude/plans/*-plan.md
+/code-quality-plan-creator     ┘
+    │
+    ▼
+/proposal-creator <plan>
+    │
+    ├─── [single proposal] ─────────▶ openspec/changes/<id>/
+    │                                       │
+    └─── [decomposed: multiple] ────▶ openspec/changes/<id-1>/
+                                      openspec/changes/<id-2>/
+                                      openspec/changes/<id-3>/
+    │                                       │
+    ▼                                       ▼
+/beads-creator <spec>           /beads-creator <spec-1> <spec-2> <spec-3>
+    │                                       │
+    ▼                                       ▼
+/beads-loop                     /beads-loop (respects cross-spec deps)
+```
+
 ## Step Mode (Default)
 
 Step mode pauses after creating beads for human review.
@@ -306,3 +328,24 @@ Use AskUserQuestion with:
 ```
 
 Use `--auto` flag to skip pauses and proceed directly to beads-loop.
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| bd not installed | "Install bd: https://github.com/steveyegge/beads" |
+| bd not initialized | "Run: bd init" |
+| Path not found | Report error |
+
+## Example Usage
+
+```bash
+# Single spec from proposal
+/beads-creator openspec/changes/add-auth/
+
+# Multiple decomposed specs
+/beads-creator openspec/changes/add-auth-backend/ openspec/changes/add-auth-frontend/
+
+# Auto mode (skip review pause)
+/beads-creator openspec/changes/add-auth/ --auto
+```

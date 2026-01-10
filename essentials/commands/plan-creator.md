@@ -165,7 +165,7 @@ Wait with TaskOutput (block: true).
 │  Output:                                                      │
 │  • Plan file path                                             │
 │  • Files to modify count                                      │
-│  • Next steps: /implement-loop or OpenSpec        │
+│  • Next steps: /implement-loop or OpenSpec                    │
 └───────────────────────────────────────────────────────────────┘
 ```
 

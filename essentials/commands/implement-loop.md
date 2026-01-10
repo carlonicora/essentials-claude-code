@@ -9,6 +9,17 @@ hide-from-slash-command-tool: "true"
 
 Execute a plan file iteratively until all todos are complete AND exit criteria pass.
 
+**IMPORTANT**: The plan file is your source of truth. Exit Criteria MUST pass before the loop will end.
+
+## Why Implement Loop?
+
+Iterative implementation with automatic verification ensures plans are fully executed with quality checks.
+
+- **Complete execution** - Continues until all todos done AND exit criteria pass
+- **Auto-decomposition** - Large plans automatically broken into manageable groups
+- **Step mode control** - Pause after each todo to prevent context degradation
+- **Context recovery** - Can resume from any point by re-reading plan state
+
 ## Supported Plan Types
 
 This command works with plans from:
@@ -16,17 +27,25 @@ This command works with plans from:
 - `/bug-plan-creator` - Bug fix plans
 - `/code-quality-plan-creator` - LSP-powered quality plans
 
-## Setup
+## Arguments
+
+The command accepts:
+- `<plan_path>`: Path to the plan file (required)
+- `--step`: Step mode (default) - pause after each todo for human control
+- `--auto`: Auto mode - skip pauses but still follow todo order
+- `--max-iterations N`: Maximum number of iterations before stopping
+
+## Instructions
+
+### Step 1: Setup
 
 ```bash
 "${CLAUDE_PLUGIN_ROOT}/scripts/setup-implement-loop.sh" $ARGUMENTS
 ```
 
-## Initial Instructions
-
 You are now in **implement loop mode**. Your task is to implement the plan completely.
 
-### Step 1: Read the Plan
+### Step 2: Read the Plan
 
 Read the plan file specified above. Extract:
 1. **Files to Edit** - existing files that need modification
@@ -39,7 +58,7 @@ Read the plan file specified above. Extract:
 8. **Success Metrics** (if present) - quantifiable success criteria
 9. **Post-Implementation Verification** (if present) - verification steps beyond exit criteria
 
-### Step 2: Auto-Assess & Decompose
+### Step 3: Auto-Assess & Decompose
 
 After reading the plan, **automatically** assess and decompose if thresholds are exceeded:
 
@@ -68,7 +87,7 @@ COMPLEXITY ASSESSMENT:
 - Groups created: [list if decomposed]
 ```
 
-### Step 3: Create Todos
+### Step 4: Create Todos
 
 Use **TodoWrite** to create a todo for each:
 - File that needs to be edited or created
@@ -87,7 +106,7 @@ Example todo structure:
 6. [pending] Complete post-implementation verification
 ```
 
-### Step 4: Implement Each Todo
+### Step 5: Implement Each Todo
 
 For each todo:
 1. Mark it as **in_progress** using TodoWrite
@@ -96,7 +115,7 @@ For each todo:
 4. Verify the implementation (run tests, type checks)
 5. Mark as **completed** ONLY when fully done
 
-### Step 5: Run Exit Criteria
+### Step 6: Run Exit Criteria
 
 Before declaring completion:
 1. Find the `## Exit Criteria` section in the plan
@@ -104,7 +123,7 @@ Before declaring completion:
 3. If it passes (exit 0), say "Exit criteria passed - implementation complete"
 4. If it fails, fix the issues and retry
 
-### Step 6: Loop Continues Until Exit Criteria Pass
+### Step 7: Loop Continues Until Exit Criteria Pass
 
 When you try to exit:
 - The stop hook extracts the Verification Script from the plan
@@ -113,7 +132,7 @@ When you try to exit:
 - If verification FAILS → loop continues with error context
 - If todos remain incomplete → loop continues
 
-### Context Recovery
+### Step 8: Context Recovery
 
 If context is compacted and you lose track:
 1. Read the plan file again
@@ -121,14 +140,11 @@ If context is compacted and you lose track:
 3. Find the `## Exit Criteria` section
 4. Continue with the next pending/in_progress todo
 
-**IMPORTANT**:
-- The plan file is your source of truth
-- Exit Criteria MUST pass before the loop will end
-- Run the verification script to confirm completion
+**Additional notes:**
 - Consult Risk Analysis for rollback strategy if implementation issues arise
 - Use Success Metrics to validate quality beyond pass/fail
 
-### Step Mode (Default)
+## Step Mode (Default)
 
 Step mode pauses after each todo for human control. This prevents context compaction and quality degradation on large plans.
 
@@ -178,3 +194,107 @@ Based on the response:
 - **Other/feedback**: Handle user's custom input
 
 **Auto mode** (`--auto` flag): Skips pauses but still follows todo order.
+
+## Workflow Diagram
+
+```
+/implement-loop <plan_path> [--step|--auto]
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ STEP 1: SETUP                                                 │
+│                                                               │
+│  • Run setup-implement-loop.sh with arguments                 │
+│  • Enter implement loop mode                                  │
+└───────────────────────────────────────────────────────────────┘
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ STEP 2: READ PLAN                                             │
+│                                                               │
+│  • Extract files to edit/create                               │
+│  • Extract implementation instructions                        │
+│  • Extract exit criteria and verification script              │
+│  • Extract testing strategy, risk analysis, success metrics   │
+└───────────────────────────────────────────────────────────────┘
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ STEP 3: AUTO-ASSESS & DECOMPOSE                               │
+│                                                               │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │ COMPLEXITY CHECK:                                       │  │
+│  │                                                         │  │
+│  │  Files >5?     → AUTO decompose by file group           │  │
+│  │  Lines >500?   → AUTO decompose by feature              │  │
+│  │  Subsystems >2? → AUTO decompose by subsystem           │  │
+│  │                                                         │  │
+│  │  Output: COMPLEXITY ASSESSMENT report                   │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ STEP 4-5: CREATE & IMPLEMENT TODOS                            │
+│                                                               │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │ TODO LOOP:                                              │  │
+│  │                                                         │  │
+│  │  For each todo:                                         │  │
+│  │    1. Mark in_progress                                  │  │
+│  │    2. Read relevant plan section                        │  │
+│  │    3. Implement changes                                 │  │
+│  │    4. Verify implementation                             │  │
+│  │    5. Mark completed                                    │  │
+│  │                                                         │  │
+│  │  Step mode: Pause after each todo (AskUserQuestion)     │  │
+│  │  Auto mode: Continue without pauses                     │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ STEP 6-7: EXIT CRITERIA VERIFICATION                          │
+│                                                               │
+│  • Run verification script from plan                          │
+│  • If PASS (exit 0) → Implementation complete                 │
+│  • If FAIL → Fix issues, retry loop                           │
+│  • If todos incomplete → Continue loop                        │
+└───────────────────────────────────────────────────────────────┘
+    │
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│ OUTPUT: Implementation Complete                               │
+│                                                               │
+│  • All todos marked completed                                 │
+│  • Exit criteria verification passed                          │
+│  • Success metrics validated                                  │
+└───────────────────────────────────────────────────────────────┘
+```
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| Plan file not found | Report error and exit |
+| Exit criteria fail | Fix issues and retry verification |
+| Context compacted | Re-read plan file, check todo status, continue |
+| Implementation issues | Consult Risk Analysis for rollback strategy |
+| Very large plan (>1000 lines) | Suggest escalating to `/proposal-creator` → `/beads-loop` |
+| Todos remain incomplete | Loop continues until all complete |
+
+## Example Usage
+
+```bash
+# Implement a feature plan with step mode (default)
+/implement-loop .plans/add-user-auth.md
+
+# Implement with auto mode (no pauses)
+/implement-loop .plans/fix-memory-leak.md --auto
+
+# Implement with maximum iterations limit
+/implement-loop .plans/refactor-api.md --max-iterations 10
+
+# Implement a bug fix plan
+/implement-loop .plans/bug-null-pointer.md --step
+```

@@ -4,6 +4,8 @@ argument-hint: "[directory-or-files]"
 description: Generate DEVGUIDE.md architectural documentation using LSP (project)
 ---
 
+# Document Creator
+
 Generate hierarchical architectural documentation (DEVGUIDE.md) by analyzing code structure with Claude Code's built-in LSP tools.
 
 **IMPORTANT**: Keep orchestrator output minimal. User reviews the document FILE directly.

@@ -10,14 +10,6 @@ Analyze code quality using **Claude Code's built-in LSP** for semantic code unde
 
 **IMPORTANT**: Keep orchestrator output minimal. User reviews the code quality report FILE directly, not in chat.
 
-## Built-in LSP Operations Used
-
-This command uses these Claude Code built-in LSP operations:
-- `documentSymbol` — Get all symbols in a document
-- `findReferences` — Find all references to a symbol
-- `goToDefinition` — Find where a symbol is defined
-- `incomingCalls`/`outgoingCalls` — Build call hierarchy
-
 ## Why Architectural Quality Plans with LSP?
 
 Architectural code quality analysis with full context produces dramatically better results:
@@ -37,6 +29,32 @@ Architectural code quality analysis with full context produces dramatically bett
 - Accurate dead code detection (zero references verified)
 - Cross-file reference checking
 - Language-aware analysis
+
+**Semantic Code Navigation:**
+- Accurate symbol discovery (classes, methods, functions, interfaces)
+- Precise reference finding (who calls what)
+- Language-aware analysis (understands code structure)
+
+**Better Dead Code Detection:**
+- LSP can verify if symbols have zero references
+- Cross-file reference checking
+- Accurate call hierarchy mapping
+
+**Improved Accuracy:**
+- Language server understands syntax and semantics
+- Type-aware analysis
+- Project-wide symbol resolution
+
+**Speed:**
+- LSP indexes code for fast lookups
+- Parallel analysis with cached symbol data
+- Efficient reference finding
+
+**Built-in LSP Operations Used**:
+- `documentSymbol` — Get all symbols in a document
+- `findReferences` — Find all references to a symbol
+- `goToDefinition` — Find where a symbol is defined
+- `incomingCalls`/`outgoingCalls` — Build call hierarchy
 
 ## What Good Architectural Quality Plans Include
 
@@ -63,7 +81,10 @@ Architectural code quality analysis with full context produces dramatically bett
 
 ## Arguments
 
-- File paths to analyze (one agent spawned per file)
+File paths to analyze (one agent spawned per file):
+- Single file: `/code-quality-plan-creator src/services/auth_service`
+- Multiple files: `/code-quality-plan-creator src/agent src/hitl src/app`
+- Glob pattern: `/code-quality-plan-creator agent/*`
 
 ## Instructions
 
@@ -384,25 +405,3 @@ Present the analysis results and implementation options to the user:
 # Single file architectural analysis with LSP
 /code-quality-plan-creator src/services/auth_service
 ```
-
-## Advantages of LSP-Powered Architectural Analysis
-
-**Semantic Code Navigation:**
-- Accurate symbol discovery (classes, methods, functions, interfaces)
-- Precise reference finding (who calls what)
-- Language-aware analysis (understands code structure)
-
-**Better Dead Code Detection:**
-- LSP can verify if symbols have zero references
-- Cross-file reference checking
-- Accurate call hierarchy mapping
-
-**Improved Accuracy:**
-- Language server understands syntax and semantics
-- Type-aware analysis
-- Project-wide symbol resolution
-
-**Speed:**
-- LSP indexes code for fast lookups
-- Parallel analysis with cached symbol data
-- Efficient reference finding

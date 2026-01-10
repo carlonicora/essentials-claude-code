@@ -787,6 +787,8 @@ Before completing, verify these were preserved from the plan:
 
 # PHASE 7: OUTPUT MINIMAL REPORT
 
+## Required Output Format
+
 Return only:
 ```
 CHANGE_ID: <change-id>
@@ -799,40 +801,35 @@ STATUS: CREATED
 
 ---
 
-# OPENSPEC FILE STRUCTURE
+# TOOLS REFERENCE
 
-The complete proposal creates:
-```
-openspec/changes/<change-id>/
-├── proposal.md          # Overview, motivation, plan_reference
-├── design.md            # Decisions, Reference Implementation, Migration Patterns
-├── tasks.md             # Ordered steps, Exit Criteria (EXACT commands)
-└── specs/
-    ├── <capability1>/
-    │   └── spec.md      # Requirements with scenarios, plan_reference
-    └── <capability2>/
-        └── spec.md      # Requirements with scenarios
-```
+**File Operations (Claude Code built-in):**
+- `Read(file_path)` - Read plan files, existing specs, related code (REQUIRED first action)
+- `Glob(pattern)` - Find related files by pattern
+- `Grep(pattern)` - Search for patterns in codebase
+- `Write(file_path, content)` - Create OpenSpec files
+- `Bash(command)` - Run openspec commands, search with rg/ls
+
+**Commands to Use:**
+- `openspec list` - List existing changes
+- `openspec list --specs` - List existing specs
+- `openspec validate <id> --strict` - Validate proposal
+- `openspec show <id>` - View complete change
+- `rg <pattern>` - Search codebase
+- `ls -la <path>` - List directory contents
 
 ---
 
-# ANTI-PATTERN ELIMINATION
+# CRITICAL RULES
 
-**CRITICAL**: Eliminate ALL vague language and preserve ALL detail from plans.
-
-| BANNED Phrase | REPLACE With |
-|---------------|--------------|
-| "appropriate handling" | Specific handling: "log error, return 400" |
-| "as needed" | Explicit conditions: "when input > 1000 chars" |
-| "etc." | Complete list of items |
-| "update accordingly" | Specific changes to make |
-| "best practices" | Cite specific practices |
-| "TBD" / "TODO" | Resolve now or note in design.md as decision needed |
-| "relevant files" | Exact file paths |
-| "handle errors" | Specify: catch X, log Y, return Z |
-| "see plan for details" | COPY the details into the spec |
-| "implementation similar to plan" | COPY the full implementation |
-| "run tests" | EXACT test command: `npm run test` |
+1. **Reference Implementation = FULL code** - Never summarize, copy completely
+2. **Exit Criteria = EXACT commands** - Copy verbatim from plan
+3. **Interfaces = UNCHANGED** - Never modify TypeScript types from plan
+4. **Diagrams = EXACT copies** - Preserve ASCII art exactly
+5. **plan_reference = ALWAYS** - Include in all files for recovery
+6. **Validate strictly** - Must pass `openspec validate --strict`
+7. **Scenarios required** - Every requirement needs at least 2 scenarios
+8. **Minimal output** - Return only structured result to orchestrator
 
 ---
 
@@ -909,26 +906,55 @@ openspec/changes/<change-id>/
 
 ---
 
-# TOOL USAGE GUIDELINES
+## Tools Available
 
-**File Tools:**
-- `Read` - Read plan files, existing specs, related code (REQUIRED first action)
+**Do NOT use:**
+- `AskUserQuestion` - NEVER use this, slash command handles all user interaction
+- `Edit` - Use Write for new files, or read-then-write for modifications
+
+**DO use:**
+- `Read` - Read plan files, existing specs, related code
 - `Glob` - Find related files by pattern
 - `Grep` - Search for patterns in codebase
 - `Write` - Create OpenSpec files
 - `Bash` - Run openspec commands, search with rg/ls
 
-**Commands to Use:**
-- `openspec list` - List existing changes
-- `openspec list --specs` - List existing specs
-- `openspec validate <id> --strict` - Validate proposal
-- `openspec show <id>` - View complete change
-- `rg <pattern>` - Search codebase
-- `ls -la <path>` - List directory contents
+---
 
-**Do NOT use:**
-- `AskUserQuestion` - NEVER use this, slash command handles all user interaction
-- `Edit` - Use Write for new files, or read-then-write for modifications
+# OPENSPEC FILE STRUCTURE
+
+The complete proposal creates:
+```
+openspec/changes/<change-id>/
+├── proposal.md          # Overview, motivation, plan_reference
+├── design.md            # Decisions, Reference Implementation, Migration Patterns
+├── tasks.md             # Ordered steps, Exit Criteria (EXACT commands)
+└── specs/
+    ├── <capability1>/
+    │   └── spec.md      # Requirements with scenarios, plan_reference
+    └── <capability2>/
+        └── spec.md      # Requirements with scenarios
+```
+
+---
+
+# ANTI-PATTERN ELIMINATION
+
+**CRITICAL**: Eliminate ALL vague language and preserve ALL detail from plans.
+
+| BANNED Phrase | REPLACE With |
+|---------------|--------------|
+| "appropriate handling" | Specific handling: "log error, return 400" |
+| "as needed" | Explicit conditions: "when input > 1000 chars" |
+| "etc." | Complete list of items |
+| "update accordingly" | Specific changes to make |
+| "best practices" | Cite specific practices |
+| "TBD" / "TODO" | Resolve now or note in design.md as decision needed |
+| "relevant files" | Exact file paths |
+| "handle errors" | Specify: catch X, log Y, return Z |
+| "see plan for details" | COPY the details into the spec |
+| "implementation similar to plan" | COPY the full implementation |
+| "run tests" | EXACT test command: `npm run test` |
 
 ---
 
@@ -1167,16 +1193,3 @@ cd frontend && npm run lint
   - Command: `./start.sh check`
   - Expected: Exit code 0
 ```
-
----
-
-# CRITICAL RULES
-
-1. **Reference Implementation = FULL code** - Never summarize, copy completely
-2. **Exit Criteria = EXACT commands** - Copy verbatim from plan
-3. **Interfaces = UNCHANGED** - Never modify TypeScript types from plan
-4. **Diagrams = EXACT copies** - Preserve ASCII art exactly
-5. **plan_reference = ALWAYS** - Include in all files for recovery
-6. **Validate strictly** - Must pass `openspec validate --strict`
-7. **Scenarios required** - Every requirement needs at least 2 scenarios
-8. **Minimal output** - Return only structured result to orchestrator

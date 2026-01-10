@@ -4,6 +4,8 @@ argument-hint: <description>
 description: Create high-quality prompts from any description (project)
 ---
 
+# Prompt Creator
+
 Transform descriptions into precise, effective prompts through multi-pass quality validation.
 
 **IMPORTANT**: Keep orchestrator output minimal. User reviews the output FILE directly.

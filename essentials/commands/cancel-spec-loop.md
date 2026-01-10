@@ -1,6 +1,6 @@
 ---
-description: "Cancel active spec loop"
-allowed-tools: ["Bash"]
+allowed-tools: Bash
+description: Cancel active spec loop
 ---
 
 # Cancel Spec Loop
@@ -31,3 +31,13 @@ To resume later:
 ```
 
 The loop will pick up where you left off.
+
+## Example Usage
+
+```bash
+# Cancel the currently running spec loop
+/cancel-spec-loop
+
+# Then resume later with the change ID
+/spec-loop change-001
+```
