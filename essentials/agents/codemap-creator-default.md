@@ -341,14 +341,6 @@ Write to: `.claude/maps/code-map-{directory}-{hash5}.json`
 
 **Create the `.claude/maps/` directory if it doesn't exist.**
 
-## Output Size Constraint
-
-**CRITICAL**: Claude Code's Read tool has a **25,000 token limit**. Large JSON files cannot be read back.
-
-**Target**: Keep code maps under **800 lines**. For large codebases, split by package/directory.
-
-**If map exceeds limit**: Create multiple map files (e.g., `code-map-src-agents-*.json`, `code-map-src-commands-*.json`).
-
 ## Step 2: Write Complete JSON Structure
 
 ```json

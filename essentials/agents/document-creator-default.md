@@ -431,14 +431,6 @@ Cross-Reference Checklist:
 
 # PHASE 7: WRITE DEVGUIDE FILE
 
-## Output Size Constraint
-
-**CRITICAL**: Claude Code's Read tool has a **25,000 token limit**. Large files cannot be read back.
-
-**Target**: Keep DEVGUIDE under **800 lines**. For large directories, focus on key patterns.
-
-**If exceeds limit**: Split into `DEVGUIDE.md` (overview) + `DEVGUIDE-details.md` (full patterns).
-
 Write the complete DEVGUIDE to the output file:
 
 ```markdown

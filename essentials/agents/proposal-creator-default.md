@@ -267,20 +267,6 @@ This proposal requires the following changes to be completed first:
 
 ---
 
-# OUTPUT SIZE CONSTRAINT
-
-**CRITICAL**: Claude Code's Read tool has a **25,000 token limit**. Large files cannot be read back.
-
-**Target per file**: Keep each OpenSpec file under **500 lines**:
-- proposal.md: ~100-200 lines
-- design.md: ~200-400 lines (with Reference Implementation)
-- tasks.md: ~100-200 lines
-- specs/*.md: ~50-100 lines each
-
-**If design.md exceeds limit**: Move full Reference Implementation to `design-impl.md`, keep patterns/summaries in main file.
-
----
-
 # PHASE 2: CREATE PROPOSAL.MD
 
 Create `openspec/changes/<change-id>/proposal.md`:
