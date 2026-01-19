@@ -1,17 +1,17 @@
 {
   "name": "essentials-claude-code",
-  "version": "2.63.0",
-  "description": "Multi-agent orchestration framework for Claude Code. Complete 5-stage workflow with context chain: Plan (source of truth) → proposal-creator → beads-creator → beads-loop. Each stage preserves full implementation code, exit criteria, and back-references for recovery. Implementation loops that iterate until complete.",
-  "author": "GantisStorm",
+  "version": "4.0.1",
+  "description": "Multi-agent orchestration framework for Claude Code. Three workflows: Simple (plan → implement-loop), Tasks (plan → prd.json → tasks-loop/RalphTUI), Beads (plan → beads → beads-loop/RalphTUI). Each task/bead preserves full implementation code. Implementation loops that iterate until complete.",
+  "author": "carlonicora",
   "owner": {
-    "name": "GantisStorm"
+    "name": "carlonicora"
   },
-  "homepage": "https://github.com/GantisStorm/essentials-claude-code",
+  "homepage": "https://github.com/carlonicora/essentials-claude-code",
   "plugins": [
     {
       "name": "essentials",
-      "version": "2.63.0",
-      "description": "15 commands, 10 agents. Context chain: Plan → Spec → Beads. Each bead is 100% self-contained (50-200+ lines of code) - loop agent never needs to read spec or plan. Full Reference Implementation preserved through entire pipeline. LSP-powered via Claude Code built-in LSP.",
+      "version": "4.0.0",
+      "description": "15 commands, 10 agents. Three workflows: Simple, Tasks, Beads. Each task/bead is 100% self-contained (50-200+ lines of code). RalphTUI integration for TUI dashboard. LSP-powered code analysis via Claude Code built-in LSP.",
       "source": "./essentials"
     }
   ]
