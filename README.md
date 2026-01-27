@@ -15,8 +15,9 @@ Claude Code is powerful, but without structure it can:
 ```bash
 /proposal-creator "Add user authentication with JWT"
 /beads-creator openspec/changes/user-auth/
-/beads-loop
-# Loop continues until no ready beads remain
+/beads-loop           # Sequential execution
+# OR
+/beads-swarm          # Parallel execution
 ```
 
 ## Install
@@ -38,8 +39,10 @@ Claude Code is powerful, but without structure it can:
 |---------|---------|--------|
 | `/proposal-creator [plan\|task]` | Create OpenSpec proposal | `openspec/changes/<id>/` |
 | `/beads-creator <spec> [spec2...]` | Convert spec(s) to beads | Beads database |
-| `/beads-loop [--step\|--auto]` | Execute beads iteratively | Task completion |
-| `/cancel-beads` | Stop beads loop gracefully | Clean exit |
+| `/beads-loop [--step\|--auto]` | Execute beads sequentially | Task completion |
+| `/beads-swarm [--workers N]` | Execute beads in parallel | Task completion |
+| `/cancel-loop` | Stop active loop | Clean exit |
+| `/cancel-swarm` | Stop swarm workers | Clean exit |
 
 ## Workflow
 
@@ -47,8 +50,8 @@ Claude Code is powerful, but without structure it can:
 PLANNING                              EXECUTION
 ┌─────────────────────────────────┐   ┌─────────────────────────────────┐
 │ 1. /proposal-creator <task>     │──▶│ 3. /beads-creator <spec>        │
-│ 2. Validate spec before beads   │   │ 4. /beads-loop                  │
-└─────────────────────────────────┘   │    bd ready → implement → close │
+│ 2. Validate spec before beads   │   │ 4. /beads-loop (sequential)     │
+└─────────────────────────────────┘   │    OR /beads-swarm (parallel)   │
                                       └─────────────────────────────────┘
 ```
 
@@ -81,26 +84,52 @@ Creates an OpenSpec proposal at `openspec/changes/<id>/` with:
 
 ### Stage 4: Execute
 
+**Sequential (loop):**
 ```bash
-/beads-loop                                    # Step mode (default)
-/beads-loop --auto                             # Auto mode
-/beads-loop --label openspec:billing           # Filter by label
-/beads-loop --max-iterations 5                 # Limit iterations
-/cancel-beads                                  # Stop gracefully
+/beads-loop                      # Step mode (default) - pauses after each
+/beads-loop --auto               # Auto mode - no pauses
+/beads-loop --label openspec:billing
 ```
 
-**Step mode:** Pauses after each bead for human control:
+**Parallel (swarm):**
+```bash
+/beads-swarm                     # Default: 3 workers
+/beads-swarm --workers 5         # More parallel workers
+/beads-swarm --model haiku       # Faster model for simple beads
 ```
-===============================================================
-BEAD COMPLETED: task-001
-===============================================================
-Progress: 1/5 beads complete
 
-EXECUTION ORDER (remaining):
-  Next → task-002: Add validation (P0)
-  Then → task-003: Write tests (P1, blocked until P0 done)
-===============================================================
+**Cancel execution:**
+```bash
+/cancel-loop                     # Stop loop
+/cancel-swarm                    # Stop all swarm workers
 ```
+
+## Loop vs Swarm
+
+| Aspect | Loop | Swarm |
+|--------|------|-------|
+| **Concurrency** | 1 task at a time | Up to N workers (default: 3) |
+| **Visibility** | Live conversation | Check via `ctrl+t` |
+| **Best for** | Interdependent tasks, debugging | Independent parallel phases |
+| **Control** | Step mode pauses | Workers run autonomously |
+
+**Choose Loop when:**
+- Tasks depend heavily on each other
+- You want to review each step
+- Debugging issues
+
+**Choose Swarm when:**
+- Many independent tasks
+- Want maximum speed
+- Large refactoring with parallel phases
+
+## Progress Visualization
+
+Press `ctrl+t` at any time during execution to see:
+- Active workers (swarm)
+- Tasks in progress
+- Completed tasks
+- Pending tasks
 
 ## What are Beads?
 
@@ -136,23 +165,13 @@ Each bead must be implementable with ONLY its description.
 | "Run tests" | `npm test -- stripe-price` |
 | "Update entity" | File + line numbers + before/after |
 
-## How Loops Work
-
-Based on [Ralph Wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) stop-hook pattern.
-
-1. Setup script creates state file (`.claude/beads-loop.local.md`)
-2. Stop hooks intercept exit attempts
-3. Hook checks `bd ready` for remaining tasks
-4. Not complete → block with continue prompt. Complete → allow exit.
-
-**Recovery:** State file + bead descriptions enable resume after context compaction or new session.
-
 ## Best Practices
 
 1. **Validate specs before beads** — Editing specs is cheap; debugging bad beads is expensive
 2. **Exit criteria are non-negotiable** — Not "tests pass" but exact commands: `npm test -- auth`
-3. **Use step mode** — Prevents context compaction and quality degradation on large task sets
-4. **Review beads** — `bd list -l "openspec:<name>"` then `bd show <id>` to verify code snippets
+3. **Use step mode for complex tasks** — Prevents quality degradation
+4. **Use swarm for independent tasks** — Maximizes parallelism
+5. **Review beads** — `bd list -l "openspec:<name>"` then `bd show <id>` to verify code snippets
 
 ## Stealth Mode
 
@@ -160,6 +179,16 @@ For brownfield development, keep tracking files out of git:
 
 ```bash
 bd init --stealth    # Adds .beads/ to .gitignore
+```
+
+## Context Recovery
+
+If you lose track during execution:
+
+```bash
+bd ready                        # See what's next
+bd list --status in_progress    # Find current work
+bd show <id>                    # Full task details
 ```
 
 ## Resources

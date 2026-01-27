@@ -154,7 +154,8 @@ Recommendation: PROCEED
 
 Next Steps:
 1. Review: bd list -l "openspec:<name>"
-2. Start: /beads-loop --label openspec:<name>
+2. Sequential: /beads-loop --label openspec:<name>
+3. Parallel: /beads-swarm --label openspec:<name>
 
 ===============================================================
 ```
@@ -192,7 +193,8 @@ Recommendation: PROCEED
 
 Next Steps:
 1. Review: bd list
-2. Start: /beads-loop (will respect cross-spec dependencies)
+2. Sequential: /beads-loop (respects dependencies)
+3. Parallel: /beads-swarm (parallel workers)
 
 ===============================================================
 ```
@@ -281,7 +283,9 @@ Decomposition Details:
 Total Beads Now: 9
 Ready: 4
 
-Next: /beads-loop --label openspec:<name>
+Next:
+- Sequential: /beads-loop --label openspec:<name>
+- Parallel: /beads-swarm --label openspec:<name>
 ===============================================================
 ```
 
@@ -306,8 +310,8 @@ Works with plans from **any planner**:
     ▼                                       ▼
 /beads-creator <spec>           /beads-creator <spec-1> <spec-2> <spec-3>
     │                                       │
-    ▼                                       ▼
-/beads-loop                     /beads-loop (respects cross-spec deps)
+    ├──▶ /beads-loop (sequential)           ├──▶ /beads-loop (sequential)
+    └──▶ /beads-swarm (parallel)            └──▶ /beads-swarm (parallel)
 ```
 
 ## Step Mode (Default)
@@ -321,13 +325,19 @@ Use AskUserQuestion with:
 - question: "Beads created. What would you like to do?"
 - header: "Next step"
 - options:
-  - label: "Continue (Recommended)"
-    description: "Proceed to /beads-loop"
+  - label: "Loop (Recommended)"
+    description: "Proceed to /beads-loop (sequential execution)"
+  - label: "Swarm"
+    description: "Proceed to /beads-swarm (parallel execution)"
   - label: "Stop"
     description: "End here for manual review"
 ```
 
 Use `--auto` flag to skip pauses and proceed directly to beads-loop.
+
+## Git Policy
+
+**NEVER push to git.** Do not run `git push`, `bd sync`, or any command that pushes to remote. The user will push manually when ready.
 
 ## Error Handling
 

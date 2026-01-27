@@ -1,13 +1,13 @@
 ---
 description: "Execute beads iteratively until all tasks complete"
 argument-hint: "[--step|--auto] [--label <label>] [--max-iterations N]"
-allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-beads-loop.sh)", "Read", "TodoWrite", "Bash", "Edit", "AskUserQuestion"]
+allowed-tools: ["Read", "TodoWrite", "Bash", "Edit", "AskUserQuestion"]
 hide-from-slash-command-tool: "true"
 ---
 
 # Beads Loop Command
 
-Execute beads iteratively until all ready tasks are complete. This is Stage 5 of the 5-stage workflow.
+Execute beads iteratively until all ready tasks are complete. Uses Claude Code's native task tracking for progress visualization.
 
 **IMPORTANT**: This command runs in step mode by default, pausing after each bead for human control. Use `--auto` to skip pauses.
 
@@ -18,7 +18,7 @@ Beads loop provides iterative execution of self-contained tasks with built-in pr
 - **Step Mode Control** - Pauses after each bead to prevent context compaction and quality degradation on large task sets
 - **Priority-Based Execution** - Follows `bd ready` priority order to handle dependencies correctly
 - **Context Recovery** - Easy commands to recover state if you lose track during execution
-- **Stealth Mode** - For brownfield development, keeps tracking files out of the repo
+- **Native Progress** - Press `ctrl+t` to see visual progress at any time
 
 ## Workflow Integration
 
@@ -27,7 +27,9 @@ This command is the final stage after:
 2. `/proposal-creator` - Create OpenSpec proposal
 3. Validation - Review and approve spec
 4. `/beads-creator` - Convert spec to self-contained beads
-5. **`/beads-loop`** - Execute beads iteratively
+5. **`/beads-loop`** - Execute beads iteratively (sequential)
+
+For parallel execution, use `/beads-swarm` instead.
 
 ## Arguments
 
@@ -41,25 +43,31 @@ The command accepts the following flags:
 
 You are now in **beads loop mode**. Execute all ready beads until complete.
 
-### Setup
+### Step 1: Parse Arguments
 
-```bash
-"${CLAUDE_PLUGIN_ROOT}/scripts/setup-beads-loop.sh" $ARGUMENTS
-```
+Parse `$ARGUMENTS` for flags:
+- Check for `--step` or `--auto` (default: step)
+- Check for `--label <value>`
+- Check for `--max-iterations <N>`
 
-### Step 1: Find Ready Work
+### Step 2: Find Ready Work
 
 ```bash
 bd ready
 ```
 
+Or with label filter:
+```bash
+bd ready -l "<label>"
+```
+
 Shows tasks with no blockers, sorted by priority.
 
-### Step 2: Pick a Task
+### Step 3: Pick a Task
 
 Select the highest priority ready task. Note its ID.
 
-### Step 3: Read Task Details
+### Step 4: Read Task Details
 
 ```bash
 bd show <id>
@@ -67,26 +75,26 @@ bd show <id>
 
 The task description should be self-contained with requirements, acceptance criteria, and files to modify.
 
-### Step 4: Start Working
+### Step 5: Start Working
 
 ```bash
 bd update <id> --status in_progress
 ```
 
-### Step 5: Implement the Task
+### Step 6: Implement the Task
 
 Follow the task description:
 1. Read the files mentioned
 2. Make the required changes
 3. Run any tests/verification in acceptance criteria
 
-### Step 6: Complete the Task
+### Step 7: Complete the Task
 
 ```bash
 bd close <id> --reason "Done: <brief summary>"
 ```
 
-### Step 7: Update OpenSpec (if applicable)
+### Step 8: Update OpenSpec (if applicable)
 
 **IMPORTANT**: If working on an OpenSpec change (label starts with `openspec:`):
 
@@ -100,9 +108,11 @@ Edit `openspec/changes/<name>/tasks.md` to mark that task complete:
 - [x] Task description here
 ```
 
-### Step 8: Repeat
+### Step 9: Repeat or Pause
 
-Continue until `bd ready` returns no tasks.
+**In step mode:** Use AskUserQuestion to pause for human control.
+
+**In auto mode:** Continue to next ready bead immediately.
 
 ### Completion
 
@@ -173,6 +183,10 @@ bd list --status in_progress    # Find current work
 bd show <id>                    # Full task details
 ```
 
+## Progress Visualization
+
+Press `ctrl+t` at any time to see visual progress of all tasks.
+
 ## Stealth Mode
 
 For brownfield development, beads should run in stealth mode to avoid committing tracking files:
@@ -182,6 +196,10 @@ bd init --stealth    # First time only - adds .beads/ to .gitignore
 ```
 
 Stealth mode keeps all beads functionality but doesn't pollute the repo.
+
+## Git Policy
+
+**NEVER push to git.** Do not run `git push`, `bd sync`, or any command that pushes to remote. The user will push manually when ready.
 
 ## Error Handling
 
@@ -196,9 +214,9 @@ Stealth mode keeps all beads functionality but doesn't pollute the repo.
 ## Stopping
 
 - Say "All beads complete" when done
-- Run `/cancel-beads` to stop early
+- Run `/cancel-loop` to stop early
 - Max iterations reached (if set)
-- In step mode: say "stop" at the pause prompt
+- In step mode: select "Stop" at the pause prompt
 
 ## Example Usage
 

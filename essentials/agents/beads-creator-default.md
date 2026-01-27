@@ -163,6 +163,31 @@ For each task in tasks.md, create a child bead that is **100% self-contained**.
 ### Bead Description Template
 
 ```markdown
+🚨 CRITICAL: Architecture Guide Required
+
+BEFORE writing ANY code, you MUST read:
+**AI-ARCHITECTURE-GUIDE.md** (root of repository)
+
+This comprehensive guide covers BOTH backend AND frontend patterns:
+
+**Backend (nestjs-neo4jsonapi):**
+- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
+- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
+- Services (extend AbstractService)
+- Controllers, DTOs, Module registration
+
+**Frontend (nextjs-jsonapi):**
+- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
+- Interfaces (type contracts with getters)
+- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
+- Input types
+
+Anti-patterns are documented for both backend and frontend.
+
+⚠️ Failure to follow these patterns will result in broken code that must be rewritten.
+
+---
+
 ## Context Chain (for disaster recovery ONLY - not for implementation)
 
 **Spec Reference**: openspec/changes/<change-name>/specs/<area>/spec.md
@@ -474,7 +499,11 @@ DEPENDENCY GRAPH:
   <bead-1> ──▶ <bead-2> ──▶ <bead-3>
             └──▶ <bead-4>
 
-Run `bd ready` to start with the first available task.
+Execution Options:
+  Sequential: /beads-loop --label openspec:<change-name>
+  Parallel: /beads-swarm --label openspec:<change-name>
+
+Press ctrl+t during execution to see progress.
 ===============================================================
 ```
 
@@ -579,7 +608,32 @@ bd create "Add JWT token validation middleware" \
   -t task -p 2 \
   --parent bd-abc123 \
   -l "openspec:add-auth" \
-  -d "## Context Chain (disaster recovery only)
+  -d "🚨 CRITICAL: Architecture Guide Required
+
+BEFORE writing ANY code, you MUST read:
+**AI-ARCHITECTURE-GUIDE.md** (root of repository)
+
+This comprehensive guide covers BOTH backend AND frontend patterns:
+
+**Backend (nestjs-neo4jsonapi):**
+- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
+- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
+- Services (extend AbstractService)
+- Controllers, DTOs, Module registration
+
+**Frontend (nextjs-jsonapi):**
+- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
+- Interfaces (type contracts with getters)
+- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
+- Input types
+
+Anti-patterns are documented for both backend and frontend.
+
+⚠️ Failure to follow these patterns will result in broken code that must be rewritten.
+
+---
+
+## Context Chain (disaster recovery only)
 
 **Spec Reference**: openspec/changes/add-auth/specs/auth/spec.md
 **Plan Reference**: .claude/plans/auth-feature-3k7f2-plan.md
@@ -791,6 +845,12 @@ npm run lint
 3. **ALL edge cases** explicitly listed
 4. **EXACT test commands** not "run tests"
 5. **Line numbers** for where to edit
+
+---
+
+## Git Policy
+
+**NEVER push to git.** Do not run `git push`, `bd sync`, or any command that pushes to remote. The user will push manually when ready.
 
 ---
 
