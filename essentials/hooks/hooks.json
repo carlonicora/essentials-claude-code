@@ -1,5 +1,5 @@
 {
-  "description": "Essentials plugin hooks for implementation loops",
+  "description": "Essentials plugin hooks for beads loop",
   "hooks": {
     "PostToolUse": [
       {
@@ -10,43 +10,9 @@
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-step-pause.sh"
           }
         ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-step-pause.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-step-pause.sh"
-          }
-        ]
       }
     ],
     "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-implement-loop.sh"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-spec-loop.sh"
-          }
-        ]
-      },
       {
         "hooks": [
           {

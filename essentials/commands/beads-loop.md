@@ -108,11 +108,6 @@ Continue until `bd ready` returns no tasks.
 
 When no ready tasks remain, say: **"All beads complete"**
 
-Then archive the OpenSpec change if applicable:
-```bash
-openspec archive <change-name>
-```
-
 ## Step Mode (Default)
 
 Step mode pauses after each bead for human control. This prevents context compaction and quality degradation on large task sets.
