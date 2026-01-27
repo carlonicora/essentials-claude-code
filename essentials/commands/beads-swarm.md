@@ -101,7 +101,7 @@ For each ready bead (up to `--workers` limit):
 
        ## Instructions
        1. Read the files mentioned
-       2. Make the required changes
+       2. Make the required changes (use LSP tools for TypeScript: documentSymbol, findReferences, goToDefinition)
        3. Run verification commands in exit criteria
        4. Report success or failure
 

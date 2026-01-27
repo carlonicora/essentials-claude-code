@@ -88,6 +88,12 @@ Follow the task description:
 2. Make the required changes
 3. Run any tests/verification in acceptance criteria
 
+**TypeScript LSP (when available):** For TypeScript/JavaScript code, use LSP tools for better accuracy:
+- `documentSymbol` - Find symbols in a file
+- `findReferences` - Find all usages of a symbol
+- `goToDefinition` - Navigate to symbol definition
+- `workspaceSymbol` - Search symbols across workspace
+
 ### Step 7: Complete the Task
 
 ```bash
