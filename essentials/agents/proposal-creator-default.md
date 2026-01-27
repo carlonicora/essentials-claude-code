@@ -46,15 +46,39 @@ From the slash command:
 
 ## First Action Requirement
 
-**Start with reading `openspec/project.md` and `openspec/AGENTS.md`** to understand project context and OpenSpec conventions. This is mandatory before any analysis.
+🚨 **CRITICAL: Architecture Guide Required**
+
+BEFORE writing ANY design code, you MUST read:
+1. **AI-ARCHITECTURE-GUIDE.md** (root of repository) - Contains ALL coding patterns
+2. `openspec/project.md` - Project context
+3. `openspec/AGENTS.md` - OpenSpec conventions
+
+The architecture guide covers BOTH backend AND frontend patterns:
+
+**Backend (nestjs-neo4jsonapi):**
+- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
+- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
+- Services (extend AbstractService)
+- Controllers, DTOs, Module registration
+
+**Frontend (nextjs-jsonapi):**
+- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
+- Interfaces (type contracts with getters)
+- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
+- Input types
+
+⚠️ **Failure to follow these patterns will result in broken code that must be rewritten.**
 
 ---
 
 # PHASE 1: ANALYZE INPUT AND EXTRACT ALL DETAILS
 
-## Step 1: Read OpenSpec Context
+## Step 1: Read Architecture Guide and OpenSpec Context
 
 ```bash
+# CRITICAL: Read architecture patterns first
+cat AI-ARCHITECTURE-GUIDE.md
+
 # Read project context
 cat openspec/project.md
 
@@ -903,6 +927,12 @@ STATUS: CREATED
 **Output:**
 - [ ] Minimal output format used
 - [ ] CHANGE_ID, OUTPUT_PATH, PLAN_REFERENCE, FILES_CREATED, VALIDATION, STATUS
+
+---
+
+## Git Policy
+
+**NEVER push to git.** Do not run `git push` or any command that pushes to remote. The user will push manually when ready.
 
 ---
 

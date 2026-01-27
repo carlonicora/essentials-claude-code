@@ -98,14 +98,15 @@ When converting a plan, you MUST preserve:
 
 ## Process
 
-1. ANALYZE INPUT - Extract ALL sections from plan (use PLAN EXTRACTION CHECKLIST)
-2. EXPLORE CODEBASE - Understand current implementation
-3. CREATE PROPOSAL - proposal.md with plan_reference, motivation, full scope tracking
-4. CREATE DESIGN - design.md with Reference Implementation (FULL code), Migration Patterns
-5. CREATE TASKS - tasks.md with Exit Criteria (EXACT commands from plan)
-6. CREATE SPECS - specs/*/spec.md with R1, R2, R3 → scenarios
-7. VALIDATE - openspec validate <change-id> --strict
-8. VERIFY - Check all plan content preserved
+1. READ AI-ARCHITECTURE-GUIDE.md FIRST - Understand ALL coding patterns before designing
+2. ANALYZE INPUT - Extract ALL sections from plan (use PLAN EXTRACTION CHECKLIST)
+3. EXPLORE CODEBASE - Understand current implementation
+4. CREATE PROPOSAL - proposal.md with plan_reference, motivation, full scope tracking
+5. CREATE DESIGN - design.md with Reference Implementation (FULL code), Migration Patterns
+6. CREATE TASKS - tasks.md with Exit Criteria (EXACT commands from plan)
+7. CREATE SPECS - specs/*/spec.md with R1, R2, R3 → scenarios
+8. VALIDATE - openspec validate <change-id> --strict
+9. VERIFY - Check all plan content preserved
 
 Return:
 CHANGE_ID: <id>
@@ -269,6 +270,10 @@ Plan (SOURCE OF TRUTH)
  │
  └──▶ specs/*.md: plan_reference + requirements line numbers
 ```
+
+## Git Policy
+
+**NEVER push to git.** Do not run `git push` or any command that pushes to remote. The user will push manually when ready.
 
 ## Error Handling
 
