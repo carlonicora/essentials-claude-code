@@ -15,16 +15,17 @@ Execute beads tasks using parallel worker agents. All workers complete → done.
 
 Use swarm when you have **independent beads** that can be worked on simultaneously:
 
-| Aspect | Loop | Swarm |
-|--------|------|-------|
-| **Concurrency** | 1 task at a time | Up to N workers (default: 3) |
-| **Visibility** | Live conversation context | Check via `ctrl+t` or `bd list` |
-| **Best for** | Interdependent tasks, debugging | Independent parallel phases |
-| **Control** | Step mode pauses | Workers run autonomously |
+| Aspect          | Loop                            | Swarm                           |
+| --------------- | ------------------------------- | ------------------------------- |
+| **Concurrency** | 1 task at a time                | Up to N workers (default: 3)    |
+| **Visibility**  | Live conversation context       | Check via `ctrl+t` or `bd list` |
+| **Best for**    | Interdependent tasks, debugging | Independent parallel phases     |
+| **Control**     | Step mode pauses                | Workers run autonomously        |
 
 ## Workflow Integration
 
 This command is the final stage after:
+
 1. `/plan-creator`, `/bug-plan-creator`, or `/code-quality-plan-creator` - Create architectural plan
 2. `/proposal-creator` - Create OpenSpec proposal
 3. Validation - Review and approve spec
@@ -37,7 +38,7 @@ For sequential execution with step mode, use `/beads-loop` instead.
 
 - `--label <label>`: Filter beads by label (e.g., `--label openspec:my-change`)
 - `--workers N`: Maximum concurrent workers (default: 3)
-- `--model MODEL`: Worker model - `haiku`, `sonnet`, or `opus` (default: sonnet)
+- `--model MODEL`: Worker model - `haiku`, `sonnet`, or `opus` (default: opus)
 
 ## Instructions
 
@@ -46,9 +47,10 @@ You are now in **beads swarm mode**. Coordinate parallel execution of beads.
 ### Step 1: Parse Arguments
 
 Parse `$ARGUMENTS` for flags:
+
 - `--label <value>` (optional)
 - `--workers <N>` (default: 3)
-- `--model <MODEL>` (default: sonnet)
+- `--model <MODEL>` (default: opus)
 
 ### Step 2: Retrieve Beads
 
@@ -57,6 +59,7 @@ bd list --json
 ```
 
 Or with label filter:
+
 ```bash
 bd list --json -l "<label>"
 ```
@@ -66,12 +69,14 @@ Parse the JSON to build a task graph with dependencies.
 ### Step 3: Build Dependency Graph
 
 From the beads JSON, extract:
+
 - `id`: Bead identifier
 - `title` or `description`: Task name
 - `depends_on`: Array of blocking bead IDs
 - `status`: pending, in_progress, completed
 
 **Important:** A bead is "ready" when:
+
 - Status is `pending`
 - All beads in `depends_on` have status `completed`
 
@@ -80,11 +85,13 @@ From the beads JSON, extract:
 For each ready bead (up to `--workers` limit):
 
 1. Mark bead as in_progress:
+
    ```bash
    bd update <id> --status in_progress
    ```
 
 2. Launch worker agent using Task tool:
+
    ```
    Use Task tool with:
    - subagent_type: "general-purpose"
@@ -128,6 +135,7 @@ Wait for workers to complete using TaskOutput:
 ### Step 6: Continue Until Done
 
 Repeat step 5 until:
+
 - All beads are completed, OR
 - No more work can be done (all remaining are blocked)
 
@@ -161,6 +169,7 @@ Execution Time: ~Z minutes
 ## Progress Visualization
 
 Press `ctrl+t` at any time to see:
+
 - Number of active workers
 - Tasks in progress
 - Completed tasks
@@ -190,12 +199,12 @@ Timeline:
 
 ## Error Handling
 
-| Scenario | Action |
-|----------|--------|
-| Worker fails | Mark bead as blocked, report error, continue with others |
-| All beads blocked | Stop swarm, report blocking issues |
-| Circular dependency | Detect and report, cannot proceed |
-| Max workers busy | Queue ready beads, spawn when workers free up |
+| Scenario            | Action                                                   |
+| ------------------- | -------------------------------------------------------- |
+| Worker fails        | Mark bead as blocked, report error, continue with others |
+| All beads blocked   | Stop swarm, report blocking issues                       |
+| Circular dependency | Detect and report, cannot proceed                        |
+| Max workers busy    | Queue ready beads, spawn when workers free up            |
 
 ## Stopping
 
@@ -206,7 +215,7 @@ Timeline:
 ## Example Usage
 
 ```bash
-# Default: 3 workers with sonnet
+# Default: 3 workers with opus
 /beads-swarm
 
 # Filter by label
@@ -224,11 +233,11 @@ Timeline:
 
 ## When to Use Loop vs Swarm
 
-| Situation | Use |
-|-----------|-----|
-| Tasks depend heavily on each other | `/beads-loop` |
-| Want to review each step | `/beads-loop --step` |
-| Many independent tasks | `/beads-swarm` |
-| Want maximum speed | `/beads-swarm` |
-| Debugging issues | `/beads-loop` |
-| Large refactoring with phases | `/beads-swarm` |
+| Situation                          | Use                  |
+| ---------------------------------- | -------------------- |
+| Tasks depend heavily on each other | `/beads-loop`        |
+| Want to review each step           | `/beads-loop --step` |
+| Many independent tasks             | `/beads-swarm`       |
+| Want maximum speed                 | `/beads-swarm`       |
+| Debugging issues                   | `/beads-loop`        |
+| Large refactoring with phases      | `/beads-swarm`       |
