@@ -98,7 +98,7 @@ When converting a plan, you MUST preserve:
 
 ## Process
 
-1. READ AI-ARCHITECTURE-GUIDE.md FIRST - Understand ALL coding patterns before designing
+1. READ docs/architecture/INDEX.md FIRST - Then read relevant architecture docs based on task type
 2. ANALYZE INPUT - Extract ALL sections from plan (use PLAN EXTRACTION CHECKLIST)
 3. EXPLORE CODEBASE - Understand current implementation
 4. CREATE PROPOSAL - proposal.md with plan_reference, motivation, full scope tracking

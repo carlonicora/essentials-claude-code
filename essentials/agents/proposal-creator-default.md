@@ -48,26 +48,21 @@ From the slash command:
 
 🚨 **CRITICAL: Architecture Guide Required**
 
-BEFORE writing ANY design code, you MUST read:
-1. **AI-ARCHITECTURE-GUIDE.md** (root of repository) - Contains ALL coding patterns
-2. `openspec/project.md` - Project context
-3. `openspec/AGENTS.md` - OpenSpec conventions
+BEFORE writing ANY design code, you MUST:
 
-The architecture guide covers BOTH backend AND frontend patterns:
+1. **Read the Architecture Index**: `docs/architecture/INDEX.md`
+2. **Follow the Quick Reference table** to identify which architecture docs apply to this task
+3. **Read only the relevant architecture docs** for the specific areas being changed
+4. Read `openspec/project.md` - Project context
+5. Read `openspec/AGENTS.md` - OpenSpec conventions
 
-**Backend (nestjs-neo4jsonapi):**
-- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
-- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
-- Services (extend AbstractService)
-- Controllers, DTOs, Module registration
+Example: If the proposal involves backend entities and frontend models, read:
+- `docs/architecture/00-core-principles.md`
+- `docs/architecture/backend/01-entity-basics.md` through `05-controllers.md`
+- `docs/architecture/frontend/01-models.md` through `03-services.md`
+- `docs/architecture/anti-patterns.md`
 
-**Frontend (nextjs-jsonapi):**
-- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
-- Interfaces (type contracts with getters)
-- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
-- Input types
-
-⚠️ **Failure to follow these patterns will result in broken code that must be rewritten.**
+⚠️ **Failure to follow documented patterns will result in broken code that must be rewritten.**
 
 ---
 
@@ -76,8 +71,14 @@ The architecture guide covers BOTH backend AND frontend patterns:
 ## Step 1: Read Architecture Guide and OpenSpec Context
 
 ```bash
-# CRITICAL: Read architecture patterns first
-cat AI-ARCHITECTURE-GUIDE.md
+# CRITICAL: Read architecture index first
+cat docs/architecture/INDEX.md
+
+# Based on task type, read relevant architecture docs
+# Example for backend work:
+cat docs/architecture/00-core-principles.md
+cat docs/architecture/backend/01-entity-basics.md
+# ... read other relevant docs based on INDEX.md guidance
 
 # Read project context
 cat openspec/project.md

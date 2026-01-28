@@ -165,26 +165,22 @@ For each task in tasks.md, create a child bead that is **100% self-contained**.
 ```markdown
 🚨 CRITICAL: Architecture Guide Required
 
-BEFORE writing ANY code, you MUST read:
-**AI-ARCHITECTURE-GUIDE.md** (root of repository)
+BEFORE writing ANY code, you MUST:
 
-This comprehensive guide covers BOTH backend AND frontend patterns:
+1. **Read the Architecture Index**: `docs/architecture/INDEX.md`
+2. **Follow the Quick Reference table** to find which docs apply to your task
+3. **Read only the relevant architecture docs** for this specific task
 
-**Backend (nestjs-neo4jsonapi):**
-- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
-- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
-- Services (extend AbstractService)
-- Controllers, DTOs, Module registration
+Example: If this bead creates a backend entity, read:
+- `docs/architecture/00-core-principles.md`
+- `docs/architecture/backend/01-entity-basics.md`
+- `docs/architecture/backend/template.md`
 
-**Frontend (nextjs-jsonapi):**
-- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
-- Interfaces (type contracts with getters)
-- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
-- Input types
+Example: If this bead modifies frontend API calls, read:
+- `docs/architecture/frontend/03-services.md`
+- `docs/architecture/anti-patterns.md`
 
-Anti-patterns are documented for both backend and frontend.
-
-⚠️ Failure to follow these patterns will result in broken code that must be rewritten.
+⚠️ Failure to follow documented patterns will result in broken code that must be rewritten.
 
 ---
 
@@ -610,26 +606,18 @@ bd create "Add JWT token validation middleware" \
   -l "openspec:add-auth" \
   -d "🚨 CRITICAL: Architecture Guide Required
 
-BEFORE writing ANY code, you MUST read:
-**AI-ARCHITECTURE-GUIDE.md** (root of repository)
+BEFORE writing ANY code, you MUST:
 
-This comprehensive guide covers BOTH backend AND frontend patterns:
+1. **Read the Architecture Index**: \`docs/architecture/INDEX.md\`
+2. **Follow the Quick Reference table** to find which docs apply to your task
+3. **Read only the relevant architecture docs** for this specific task
 
-**Backend (nestjs-neo4jsonapi):**
-- Entity Descriptors (defineEntity, isCompanyScoped, excludeFromJsonApi)
-- Repositories (extend AbstractRepository, use readOne/readMany, {CURSOR}, buildDefaultMatch)
-- Services (extend AbstractService)
-- Controllers, DTOs, Module registration
+This bead creates backend middleware, so read:
+- \`docs/architecture/00-core-principles.md\`
+- \`docs/architecture/backend/04-services.md\`
+- \`docs/architecture/anti-patterns.md\`
 
-**Frontend (nextjs-jsonapi):**
-- Models (extend AbstractApiData, implement rehydrate/createJsonApi)
-- Interfaces (type contracts with getters)
-- Services (extend AbstractService, use callApi/EndpointCreator - NEVER fetch directly)
-- Input types
-
-Anti-patterns are documented for both backend and frontend.
-
-⚠️ Failure to follow these patterns will result in broken code that must be rewritten.
+⚠️ Failure to follow documented patterns will result in broken code that must be rewritten.
 
 ---
 
