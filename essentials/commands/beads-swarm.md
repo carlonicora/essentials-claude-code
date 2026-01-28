@@ -103,7 +103,8 @@ For each ready bead (up to `--workers` limit):
        1. Read the files mentioned
        2. Make the required changes (use LSP tools for TypeScript: documentSymbol, findReferences, goToDefinition)
        3. Run verification commands in exit criteria
-       4. Report success or failure
+       4. If this bead has an `openspec:` label: Edit `openspec/changes/<name>/tasks.md` to mark the corresponding task as `[x]`
+       5. Report success or failure
 
        When complete, output: "BEAD COMPLETE: <id>"
        If blocked, output: "BEAD BLOCKED: <id> - <reason>"
@@ -155,12 +156,6 @@ Execution Time: ~Z minutes
 - <id>: <title> - <reason>
 
 ===============================================================
-```
-
-If OpenSpec label detected, remind to update tasks.md:
-```
-Note: Don't forget to update openspec/changes/<name>/tasks.md
-to mark completed tasks with [x].
 ```
 
 ## Progress Visualization

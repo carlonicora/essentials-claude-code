@@ -1,6 +1,6 @@
 {
   "name": "essentials-claude-code",
-  "version": "6.3.0",
+  "version": "6.3.1",
   "description": "Beads workflow with loops and swarms: proposal-creator → beads-creator → beads-loop/beads-swarm",
   "author": "carlonicora",
   "owner": {
@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "essentials",
-      "version": "6.3.0",
+      "version": "6.3.1",
       "description": "7 commands, 2 agents. Beads workflow with parallel swarm support and ctrl+t progress.",
       "source": "./essentials"
     }
